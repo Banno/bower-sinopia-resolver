@@ -1,6 +1,6 @@
 {
   "name": "bower-sinopia-resolver",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Use Sinopia as a registry for for Bower Dependencies",
   "main": "index.js",
   "scripts": {},
