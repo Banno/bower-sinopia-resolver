@@ -131,11 +131,11 @@ module.exports = function resolver (bower) {
 
       var request_ = request.defaults(reqOptsForScope(scope));
 
-      var downloadPath = tmp.dirSync();
+      var downloadPath = tmp.dirSync({mode: 0755 });
 
       return download(endpoint.target, downloadPath.name,
           object.mixIn({ request: request_}, bower.config)).then(function (archivePatch) {
-        var extractPath = tmp.dirSync();
+        var extractPath = tmp.dirSync({ mode: 0755});
 
         return extract(archivePatch, extractPath.name).then(function () {
           downloadPath.removeCallback();
