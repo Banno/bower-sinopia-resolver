@@ -57,6 +57,10 @@ Even though referenced with the scope, pacakages will install without the @myco 
 
 Authentication is not currently supported - packages are downloaded anonymously.
 
+## History
+
+This packaged was based off of [bower-art-resolver](https://github.com/JFrogDev/bower-art-resolver)
+
 ## License
 
 Copyright 2015 [Jack Henry & Associates Inc](https://www.jackhenry.com/).
