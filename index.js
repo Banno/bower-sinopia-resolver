@@ -6,6 +6,7 @@ var tmp = require('tmp');
 var download = require('./download');
 var extract = require('./extract');
 var object = require('mout/object');
+var path = require('path');
 
 tmp.setGracefulCleanup();
 
@@ -21,7 +22,8 @@ module.exports = function resolver (bower) {
   var keysToDelete = [];
   for (var key in config.scopes) {
     if (config.scopes[key].cafile) {
-      config.scopes[key].ca = fs.readFileSync(config.scopes[key].cafile);
+      config.scopes[key].ca = fs.readFileSync(
+          path.resolve(config.scopes[key].cafile));
     }
 
     if (key !== key.toLowerCase()) {
