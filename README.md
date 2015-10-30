@@ -31,14 +31,41 @@ Add a bower-sinopia-resolver configuration
       
       // scope would be @myco
       "myco": { 
-        //uri of your sinopia server 
+        // uri of your sinopia server 
+        // must not contain a trailing slash
         "server": "https://sinopia.myco.com",
         
-        //optional - allows strict ssl support for self-signed or private certificates
+        // optional - allows strict ssl support for self-signed or private certificates
         "cafile": "/path/to/certificate.pem"
       }
     }
   }
+```
+
+#### Full example .bowerrc
+
+This is a minimal example only. For a full reference see http://bower.io/docs/config/
+
+```JavaScript
+{
+ "resolvers": [
+    "bower-sinopia-resolver"
+  ],
+  "bower-sinopia-resolver": {
+    "scopes": {
+      
+      // scope would be @myco
+      "myco": { 
+        // uri of your sinopia server 
+        // must not contain a trailing slash
+        "server": "https://sinopia.myco.com",
+        
+        // optional - allows strict ssl support for self-signed or private certificates
+        "cafile": "/path/to/certificate.pem"
+      }
+    }
+  }
+}
 ```
 
 ## Usage
