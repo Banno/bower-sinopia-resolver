@@ -1,7 +1,7 @@
 {
   "name": "bower-sinopia-resolver",
   "version": "1.0.2",
-  "description": "Use Sinopia as for Bower Dependencies",
+  "description": "Use Sinopia as a registry for for Bower Dependencies",
   "main": "index.js",
   "scripts": {},
   "repository": {
@@ -12,7 +12,10 @@
     "bower-resolver",
     "sinopia"
   ],
-  "author": "Chad Killingsworth",
+  "author": {
+    "name": "Chad Killingsworth",
+    "email": "ckillingsworth@jackhenry.com"
+  },
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/Banno/bower-sinopia-resolver/issues"
