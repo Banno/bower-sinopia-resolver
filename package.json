@@ -1,6 +1,6 @@
 {
   "name": "bower-sinopia-resolver",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Use Sinopia as for Bower Dependencies",
   "main": "index.js",
   "scripts": {},

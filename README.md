@@ -1,6 +1,9 @@
 # bower-sinopia-resolver
 
-A custom Bower resolver supporting scoped npm packages on a sinopia server to be installed
+A [custom Bower resolver](http://bower.io/docs/pluggable-resolvers/) supporting installation of [scoped npm packages](https://docs.npmjs.com/misc/scope)
+from a [sinopia server](https://github.com/rlidwka/sinopia)
+
+npm packages for installation via bower are expected to contain a bower.json file.
 
 ## Installation
 
