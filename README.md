@@ -78,7 +78,7 @@ Once configured, your bower.json files may reference packages using [npm scope s
   }
 ```
 
-Even though referenced with the scope, pacakages will install without the @myco scope prefixed name.
+Even though referenced with the scope, packages will install without the @myco scope prefixed name.
 
 ## Notes
 
