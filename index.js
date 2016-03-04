@@ -157,7 +157,7 @@ module.exports = function resolver (bower) {
             };
           });
         });
-      })
+      });
     }
   }
 };
