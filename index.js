@@ -7,6 +7,7 @@ var download = require('./download');
 var extract = require('./extract');
 var object = require('mout/object');
 var path = require('path');
+var npm = require('npm');
 
 tmp.setGracefulCleanup();
 
@@ -39,11 +40,20 @@ module.exports = function resolver (bower) {
   var packageNameParts = /^@[-a-z]+\/([^=]+)/i;
 
   function reqOptsForScope(scope) {
+    var deferred = Q.defer();
     var reqDefaults = {};
     if (config.scopes[scope].ca) {
       reqDefaults.ca = config.scopes[scope].ca;
     }
-    return reqDefaults;
+    npm.load(function () {
+      var credentials = npm.config.getCredentialsByURI( config.scopes[scope].server);
+      if (credentials.token !== undefined) {
+        reqDefaults.headers = {'authorization': 'Bearer ' + credentials.token};
+      }
+      deferred.resolve(reqDefaults);
+    });
+
+    return deferred.promise;
   }
 
   function scopeForSource(source) {
@@ -83,39 +93,40 @@ module.exports = function resolver (bower) {
       var scope = scopeForSource(source);
       var packageName = packageNameForSource(source);
 
-      var request_ = request.defaults(reqOptsForScope(scope));
       var deferred = Q.defer();
+      reqOptsForScope(scope).then(function (opts) {
+        var request_ = request.defaults(opts);
 
-      var packageInfoUri = config.scopes[scope].server + '/@' +
-          scope + '%2f' + packageName + '/';
+        var packageInfoUri = config.scopes[scope].server + '/@' +
+            scope + '%2f' + packageName + '/';
 
-      request_(packageInfoUri, function(error, response, body) {
-        if (error) {
-          deferred.reject(new Error('Request to ' + packageInfoUri + ' failed: ' + error.message));
-          return;
-        }
-        if (response.statusCode !== 200) {
-          deferred.reject(new Error('Request to ' + packageInfoUri + ' returned ' + response.statusCode + ' status code.'));
-          return;
-        }
+        request_(packageInfoUri, function(error, response, body) {
+          if (error) {
+            deferred.reject(new Error('Request to ' + packageInfoUri + ' failed: ' + error.message));
+            return;
+          }
+          if (response.statusCode !== 200) {
+            deferred.reject(new Error('Request to ' + packageInfoUri + ' returned ' + response.statusCode + ' status code.'));
+            return;
+          }
 
-        var respObject;
+          var respObject;
 
-        try {
-          respObject = JSON.parse(body);
-        } catch (e) {
-          deferred.reject(e);
-        }
+          try {
+            respObject = JSON.parse(body);
+          } catch (e) {
+            deferred.reject(e);
+          }
 
-        var versions = [];
-        for(var version in respObject.versions) {
-          versions.push({
-            target: respObject.versions[version].dist.tarball,
-            version: version
-          });
-        }
-
-        deferred.resolve(versions);
+          var versions = [];
+          for(var version in respObject.versions) {
+            versions.push({
+              target: respObject.versions[version].dist.tarball,
+              version: version
+            });
+          }
+          deferred.resolve(versions);
+        });
       });
 
       return deferred.promise;
@@ -128,22 +139,23 @@ module.exports = function resolver (bower) {
       }
 
       var scope = scopeForSource(endpoint.source);
+      return reqOptsForScope(scope).then(function (opts) {
+        var request_ = request.defaults(opts);
 
-      var request_ = request.defaults(reqOptsForScope(scope));
+        var downloadPath = tmp.dirSync({mode: 0755 });
 
-      var downloadPath = tmp.dirSync({mode: 0755 });
+        return download(endpoint.target, downloadPath.name,
+            object.mixIn({ request: request_}, bower.config)).then(function (archivePatch) {
+          var extractPath = tmp.dirSync({ mode: 0755});
 
-      return download(endpoint.target, downloadPath.name,
-          object.mixIn({ request: request_}, bower.config)).then(function (archivePatch) {
-        var extractPath = tmp.dirSync({ mode: 0755});
+          return extract(archivePatch, extractPath.name).then(function () {
+            downloadPath.removeCallback();
 
-        return extract(archivePatch, extractPath.name).then(function () {
-          downloadPath.removeCallback();
-
-          return {
-            tempPath: extractPath.name,
-            removeIgnores: true
-          };
+            return {
+              tempPath: extractPath.name,
+              removeIgnores: true
+            };
+          });
         });
       });
     }

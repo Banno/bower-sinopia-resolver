@@ -3,7 +3,7 @@ var Q = require('q');
 var object = require('mout/object');
 var retry = require('retry');
 var fs = require('graceful-fs');
-var url = require('url')
+var url = require('url');
 var request = require('request');
 var tmp = require('tmp');
 var path = require('path');
@@ -43,7 +43,7 @@ function download(requestUrl, downloadPath, config) {
     timeout: config.timeout
   });
 
-  _request = _request.defaults(config.request || {})
+  _request = _request.defaults(config.request || {});
 
   // Retry on network errors
   operation = retry.operation(retryOptions);
